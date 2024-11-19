@@ -1,0 +1,24 @@
+---
+- name: Setting up Common
+  hosts: all
+  strategy: free
+  ignore_errors: true
+  gather_facts: false
+  tasks:
+  - name: Building Host File
+    copy:
+      dest: /etc/hosts
+      content: "127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4\n:1         localhost localhost.localdomain localhost6 localhost6.localdomain6\n192.168.99.9 repo.rhcsa.example.com repo\n192.168.99.10 server1.rhcsa.example.com server1\n192.168.99.11 server2.rhcsa.example.com server2"
+      force: yes
+  - name: Enabling IPV6
+    shell: sysctl net.ipv6.conf.lo.disable_ipv6=0 ; sysctl net.ipv6.conf.all.disable_ipv6=0
+  - name: Enabling SSH Password Authentication
+    shell: "sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config"
+  - name: Restart sshd
+    service:
+      name: sshd
+      state: restarted
+  - name: Disable EPEL Repository
+    shell: "dnf config-manager --set-disabled epel"
+  
+      

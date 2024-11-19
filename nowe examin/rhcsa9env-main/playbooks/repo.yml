@@ -1,0 +1,98 @@
+---
+- import_playbook: common.yml
+- name: Setting up Repo Server
+  hosts: repo
+  strategy: free
+  ignore_errors: true
+  gather_facts: false
+  tasks:
+    - name: Setting Hostname
+      hostname: name=repo.rhcsa.example.com
+    - name: Configuring network
+      shell: nmcli con mod "System eth1" ipv4.addresses 192.168.99.9/24 ipv4.gateway 192.168.99.1 ipv4.dns 8.8.8.8 ipv4.method manual
+    - name: Create Local Repository 
+      file:
+        path: /mnt/repo
+        state: directory
+    - name: Mount DVD read-only
+      mount:
+        path: /mnt/repo
+        src: /dev/sr0
+        fstype: iso9660
+        opts: ro
+        state: mounted
+    - name: Add BaseOS Repository
+      copy:
+        content: |
+          [BaseOS]
+          name=BaseOS repo
+          baseurl=file:///mnt/repo/BaseOS
+        dest: /etc/yum.repos.d/BaseOS.repo
+    - name: Add AppStream Repository
+      copy:
+        content: |
+          [AppStream]
+          name=AppStream repo
+          baseurl=file:///mnt/repo/AppStream
+        dest: /etc/yum.repos.d/AppStream.repo
+    - name: Install Packages
+      package:
+        name: "{{ item  }}"
+        state: present
+      with_items:
+        - httpd
+        - nfs-utils
+        - python3-policycoreutils
+        - policycoreutils-python-utils
+    - name: Add Apache Virtualhost
+      copy:
+        content: |
+          <Directory /mnt/repo>
+              AllowOverride None
+              Options +Indexes
+              Require all granted
+          </Directory>
+          Alias / /mnt/repo/
+        dest: /etc/httpd/conf.d/repo.conf
+    # - name: Allow apache to modify files in /mnt/repo
+    #   sefcontext:
+    #     target: '/mnt/repo(/.*)?'
+    #     setype: httpd_sys_content_t
+    #     state: present 
+    - name: Ensure user "op01" exists
+      ansible.builtin.user:
+        name: op01
+        uid: 1001
+        home: /user-homes/op01
+        umask: 077
+        state: present
+    - name: Export NFS Share
+      shell: echo "/user-homes/op01 192.168.99.0/24(sync,rw)" > /etc/exports
+    - name: Starting services
+      service:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      with_items:
+        - httpd
+        - firewalld
+        - nfs-server
+    - name: Enabling Firewall Services
+      firewalld: 
+        service: "{{ item }}"
+        immediate: yes
+        permanent: yes
+        state: enabled
+      with_items:
+        - http
+        - nfs
+    - name: Adjusting Services and Rebooting
+      selinux:
+        state: permissive
+        policy: targeted
+      notify:
+        - Reboot machine
+  handlers:
+    - name: Reboot machine
+      ansible.builtin.reboot:
+        msg: "Rebooting machine in 5 seconds"

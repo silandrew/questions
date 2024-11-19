@@ -1,0 +1,31 @@
+REST service desighn consideration
+
+Step 1: Set Up Infrastructure as Code (IaC) using Terraform
+Define the infrastructure for each environment in code  HCL for Terraform).
+Define AWS resources such as EKS or EC2  instances, RDS (Relational Database Service) or DocumentDB for MongoDB, VPC (Virtual Private Cloud), security groups, etc.
+Use separate configuration files for each environment. Parameters like instance sizes and scaling configurations can vary between environments.
+Step 2: Configuration Management
+Use AWS Systems Manager Parameter Store or AWS Secrets Manager to store and manage configurations and secrets for each enviromets  you can use hashicorp Vault as as cloud agnostic solution to store configurations and secrets.
+Step 3: Use AWS gitalab CI/CD
+Set up a pipeline with source, build, and deploy stages.
+Configure different pipelines for different environments.
+Step 4: Deployment Strategy
+Option a. Use a blue/green deployment strategy to ensure zero downtime during deployment and easy rollback in case of failure.
+Option B Canary deployment . Two or more services or versions of an application are deployed in parallel, one running an existing version, and one with new features. Users are gradually shifted to the new version, allowing the new version to be validated by exposing it to real users. If no errors are reported, one of the new versions can be gradually deployed to all users.
+Step 5: Monitoring and Logging
+Configure monitoring and logging. Set up alarms for critical issues.
+Step 6: Backup and Disaster Recovery
+Regularly back up databases using Amazon RDS snapshots or Amazon DocumentDB snapshots.
+Plan and document the disaster recovery strategy.
+Step 7: Security Considerations
+Implement IAM roles and policies to enforce the principle of least privilege.
+Encrypt data at rest using AWS KMS and data in transit using SSL/TLS.
+Use security groups and network ACLs to control inbound and outbound traffic.
+Step 8: Auto Scaling
+Use EKS Auto Scaling to automatically scale based on load.
+Step 9: Update and Maintenance
+Regularly review and apply security patches and updates.
+Use rolling updates to minimize service disruption during maintenance.
+Step 10: Documentation
+Write a README file that explains how to run the service and the generator.
+Document the deployment process, configuration management, monitoring, and all other relevant processes.

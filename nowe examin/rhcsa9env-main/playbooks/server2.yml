@@ -1,0 +1,35 @@
+---
+- import_playbook: common.yml
+- name: Setting up Server2
+  hosts: server2
+  strategy: free
+  ignore_errors: true
+  gather_facts: false
+  tasks:
+  - name: Setting Hostname
+    hostname: name=server2.rhcsa.example.com
+  - name: Configuring network
+    shell: nmcli con mod "System eth1" ipv4.addresses 192.168.99.110/24 ipv4.gateway 192.168.99.1 ipv4.dns 8.8.8.8 ipv4.method manual
+  - name: Add BaseOS Repository
+    copy:
+      content: |
+        [BaseOS]
+        name=BaseOS repo
+        baseurl=http://repo.rhcsa.example.com/BaseOS
+        enabled=1
+      dest: /etc/yum.repos.d/BaseOS.repo
+  - name: Add AppStream Repository
+    copy:
+      content: |
+        [AppStream]
+        name=AppStream repo
+        baseurl=http://repo.rhcsa.example.com/AppStream
+        enabled=1
+      dest: /etc/yum.repos.d/AppStream.repo
+  - name: Ensure user "op01" exists
+    ansible.builtin.user:
+      name: op01
+      uid: 1001
+      home: /localhome/op01
+      create_home: false
+      state: present
