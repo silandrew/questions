@@ -1,0 +1,278 @@
+sudo apt-mark unhold kubelet kubectl && \
+sudo apt-get update && sudo apt-get install -y kubelet='1.33.3-*' kubectl='1.33.3-*' && \
+sudo apt-mark hold kubelet kubectl
+
+
+
+ssh node01
+    service kubelet status
+
+We should check the logs:
+
+
+grep kubelet /var/log/syslog
+
+
+Get familiarize on how to extract data using -o jsonpath
+Ex: to get list of conatiners in a pod:
+kubectl get pod <pod-name> -o jsonpath={.spec.containers[*].name}
+
+How do you replace an existing ingress resource with the new gateway api resources — gateway & httproute with tls?
+Different ways of installing Helm charts with out crds?
+helm template command usage.
+
+How do you replace an existing ingress resource with the new gateway api resources — gateway & httproute with tls?
+Different ways of installing Helm charts with out crds?
+helm template command usage.
+
+Differentiate how yamlinterprets list wrt AND, OR .
+Checking validation of tls certs using openssl.
+Types of CNIs & their limitations.
+Using crictl to debug pod containers in the nodes.
+
+
+
+backup 
+ETCDCTL_API=3 etcdctl \
+  --endpoints=https://127.0.0.1:2379 \
+  --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+  --cert=/etc/kubernetes/pki/etcd/server.crt \
+  --key=/etc/kubernetes/pki/etcd/server.key \
+  snapshot save /opt/cluster_backup.db
+
+
+
+ETCDCTL_API=3 etcdctl snapshot restore /opt/cluster_backup.db \
+  --data-dir=/root/default.etcd \
+  > restore.txt 2>&1
+
+ETCDCTL_API=3 etcdctl --endpoints=https://[127.0.0.1]:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+ --name=master \
+ --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key \
+ --data-dir /var/lib/etcd-from-backup \
+ --initial-cluster=master=https://127.0.0.1:2380 \
+ --initial-cluster-token=etcd-cluster-1 \
+ --initial-advertise-peer-urls=https://127.0.0.1:2380 \
+ snapshot restore **/tmp/snapshot-pre-boot.db**
+
+
+kubectl create priorityclass high-priority --value=1000000
+
+# list unit files with systemctl and grep for 'kube'
+sudo systemctl list-unit-files --type service --all | grep kube > services.csv
+
+
+
+
+# list the Taints applied to node01
+k desribe no node01 | grep Taints
+The output should look similar to the following:
+
+Taints:             dedicated=special-user:NoSchedule
+
+
+The final pod.yaml file should look like this
+
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  tolerations:
+  - key: "dedicated"
+    value: "special-user"
+    effect: "NoSchedule"
+  containers:
+  - image: nginx
+    name: nginx
+
+
+
+
+cat << EOF > pod-logging-sidecar.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-logging-sidecar
+spec:
+  containers:
+  - image: busybox
+    name: main
+    args: [ 'sh', '-c', 'while true; do echo "$(date)\n" >> /var/log/main-container.log; sleep 5; done' ]
+    volumeMounts:
+      - name: varlog
+        mountPath: /var/log
+  - name: sidecar
+    image: busybox
+    args: [ /bin/sh, -c, 'tail -f /var/log/main-container.log' ]
+    volumeMounts:
+      - name: varlog
+        mountPath: /var/log
+  volumes:
+    - name: varlog
+      emptyDir: {}
+EOF
+
+
+# in the deployment yaml, modify the 'strategy'. save and quit to apply the changes!
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 5
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: source-ip-app
+  strategy:
+
+
+Upgrade the kubelet to version 1.27.0 and verify that the kubelet has been upgraded.
+
+HINT: We use the apt package manager to install in Ubuntu
+
+
+Solution
+
+# check the current version of kubelet
+k get no
+# install kubelet and pin it to version 1.27.0
+# you can view this page from K8s docs during the exam: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
+
+# download the gpg key
+sudo curl -fsSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+
+# add to apt sources
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+# update package index and install kubelet version 1.27.0
+sudo apt update
+sudo apt install -y kubelet=1.27.0-00
+# verify the version of kubelet has been upgraded to 1.27.0
+
+
+
+drain
+
+
+able
+controlplane:~$ kubectl cordon node01
+node/node01 cordoned
+
+
+# evict the pods that are running on node01
+kubectl drain node01 --ignore-daemonsets
+
+# verify that there are no pods running on node01
+kubectl get po -o wide | grep node01
+
+# mark the node scheduleable once again
+kubectl uncordon node01
+
+
+
+
+
+ete the pod, and edit the pod YAML, adding the nodeName selector to ensure that it's scheduled to node01
+
+See which node the pod was scheduled to.
+
+
+Solution
+
+# delete the existing pod
+kubectl delete po nginx
+
+# edit the pod yaml
+kubectl run nginx --image nginx --dry-run=client -o yaml > pod.yaml
+# add the nodeName to pod.yaml to schedule the pod to node01
+...
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  nodeName:
+    node01
+  containers:
+  - image: nginx
+    name: nginx
+...
+# schedule pod
+k apply -f pod.yaml
+
+# see which node the pod is scheduled to 
+k get po -o wide
+
+k get no
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+  nodeSelector:
+    kubernetes.io/hostname: controlplane
+  tolerations:
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"
+
+---
+Find out why the pod is in a pending state. Fix the pod so that it is in a running state.
+
+HINT: Use kubectl to list the events of the pod.
+
+Solution
+
+# describe the pod to see why the pod is in a pending state
+kubectl describe po nginx
+# describe the controlplane node to view the taint applied
+kubectl describe no controlplane | grep Taint
+# get the pod to run on the control plane by removing the taint
+kubectl taint no controlplane node-role.kubernetes.io/control-plane:NoSchedule-
+# check to see if the pod is now running and scheduled to the control plane node
+kubectl get po -o wide
+
+
+
+k -n kube-system edit svc kube-dns
+
+
+
+..
+# apply the update to the kubelet configuration immediately on the node
+kubeadm upgrade node phase kubelet-config
+systemctl daemon-reload
+systemctl restart kubelet
+
+
+
+Start a pod named 'netshoot' which uses the image `nicolaka/netshoot'. Ensure that the pod will stay in a running state.
+
+Get a shell to the pod and cat the /etc/resolv.conf to check that the DNS server used is 100.96.0.10
+
+use the nslookup tool to look up the DNS info for example.com
+
+
+Solution
+
+# start a pod named 'netshoot' using the image 'nicolaka/netshoot' ensuring that the pod stays in a running state.
+kubectl run netshoot --image=nicolaka/netshoot --command sleep --command "3600"
+# get a shell to the running container named 'netshoot'
+k exec -it netshoot -- bash
+
+# cat the /etc/resolv.conf
+cat /etc/resolv.conf
+# run nslookup on example.com
+nslookup example.com
