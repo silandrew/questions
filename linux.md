@@ -1,13 +1,155 @@
 # Linux Troubleshooting Guide
 
-## Table of Contents
+## Quick Reference Table of Contents with Line Numbers
+
+> **Note:** Click on any topic name to jump directly to that section in the document.
+
+| **Topic** | **Line** | **Description** |
+|-----------|----------|-----------------|
+| **GENERAL** |
+| [General Troubleshooting Approach](#general-troubleshooting-approach) | 15 | Systematic troubleshooting methodology |
+| [Systematic Troubleshooting Method](#systematic-troubleshooting-method) | 17 | Step-by-step approach |
+| **COMMAND FUNDAMENTALS** |
+| [Linux Command Fundamentals](#linux-command-fundamentals) | 27 | Basic command structure and usage |
+| [Command Structure](#command-structure) | 31 | How Linux commands are structured |
+| [Common Command Options](#common-command-options) | 51 | Short vs long options |
+| **FILE & DIRECTORY COMMANDS** |
+| [File and Directory Commands](#file-and-directory-commands) | 91 | Core file management commands |
+| [ls - List Directory](#ls---list-directory-contents) | 93 | List files and directories |
+| [cd - Change Directory](#cd---change-directory) | 133 | Navigate directories |
+| [pwd - Print Working Directory](#pwd---print-working-directory) | 150 | Show current location |
+| [mkdir - Make Directory](#mkdir---make-directory) | 158 | Create directories |
+| [rm - Remove Files/Directories](#rm---remove-filesdirectories) | 172 | Delete files/directories |
+| [cp - Copy Files/Directories](#cp---copy-filesdirectories) | 200 | Copy operations |
+| [mv - Move/Rename Files](#mv---moverename-files) | 224 | Move and rename |
+| [touch - Create/Update Files](#touch---create-empty-file-or-update-timestamp) | 248 | Create empty files |
+| [cat - Display File Contents](#cat---concatenate-and-display-files) | 259 | Concatenate and view files |
+| [less - View Files Paginated](#less---view-file-contents-paginated) | 276 | View files with pagination |
+| [head - Display First Lines](#head---display-first-lines) | 297 | View file beginning |
+| [tail - Display Last Lines](#tail---display-last-lines) | 308 | View file ending, follow logs |
+| **TEXT PROCESSING** |
+| [Text Processing Commands](#text-processing-commands) | 326 | Text manipulation tools |
+| [grep - Search Text](#grep---search-text-patterns) | 328 | Pattern matching and search |
+| [sed - Stream Editor](#sed---stream-editor) | 367 | Text transformation |
+| [awk - Pattern Processing](#awk---pattern-scanning-and-processing) | 402 | Advanced text processing |
+| [sort - Sort Lines](#sort---sort-lines) | 439 | Sort file contents |
+| [uniq - Remove Duplicates](#uniq---remove-duplicate-lines) | 457 | Find unique lines |
+| [cut - Extract Columns](#cut---extract-columns) | 471 | Extract fields from text |
+| [tr - Translate Characters](#tr---translate-or-delete-characters) | 485 | Character translation |
+| [wc - Word Count](#wc---word-count) | 500 | Count lines, words, characters |
+| **PERMISSIONS** |
+| [File Permissions and Ownership](#file-permissions-and-ownership) | 518 | Permission management |
+| [chmod - Change Permissions](#chmod---change-file-permissions) | 520 | Modify file permissions |
+| [chown - Change Ownership](#chown---change-ownership) | 563 | Change file owner |
+| [chgrp - Change Group](#chgrp---change-group) | 577 | Change file group |
+| [umask - Default Permissions](#umask---set-default-permissions) | 584 | Set default permission mask |
+| **PROCESS MANAGEMENT** |
+| [Process Management Commands](#process-management-commands) | 599 | Process control |
+| [ps - Process Status](#ps---process-status) | 601 | List processes |
+| [kill - Send Signals](#kill---send-signal-to-process) | 621 | Terminate processes |
+| [pkill/pgrep - Process by Name](#pkill--pgrep---process-management-by-name) | 644 | Find/kill by name |
+| [jobs/fg/bg - Job Control](#jobs--fg--bg---job-control) | 656 | Background job management |
+| **SYSTEM INFORMATION** |
+| [System Information Commands](#system-information-commands) | 673 | System details |
+| [uname - System Info](#uname---system-information) | 675 | Kernel and OS information |
+| [hostname - System Name](#hostname---showset-hostname) | 687 | Show/set hostname |
+| [uptime - System Uptime](#uptime---system-uptime) | 697 | System running time |
+| [whoami/who/w - User Info](#whoami--who--w---user-information) | 705 | Current user information |
+| [df - Disk Free Space](#df---disk-free-space) | 718 | Filesystem usage |
+| [du - Disk Usage](#du---disk-usage) | 733 | Directory size |
+| [free - Memory Usage](#free---memory-usage) | 748 | RAM and swap usage |
+| **ARCHIVES** |
+| [Archive and Compression](#archive-and-compression) | 762 | File compression tools |
+| [tar - Archive Files](#tar---archive-files) | 764 | Create/extract archives |
+| [gzip/gunzip - Compress](#gzip--gunzip---compress-files) | 799 | Gzip compression |
+| [zip/unzip - ZIP Archives](#zip--unzip---zip-archives) | 812 | ZIP file handling |
+| **INSTALLATION** |
+| [Quick Installation Guide](#quick-installation-guide-for-common-tools) | 829 | Tool installation commands |
+| [Red Hat/CentOS/Rocky/Alma](#red-hatcentosrockyalma-linux) | 833 | RHEL-based systems |
+| [Ubuntu/Debian](#ubuntudebian) | 865 | Debian-based systems |
+| [Python pip Tools](#using-python-pip-cross-platform) | 894 | Python-based utilities |
+| [Built-in Tools](#built-in-tools-no-installation-required) | 901 | No installation needed |
+| **TROUBLESHOOTING TOOLS** |
+| [Essential Troubleshooting Tools](#essential-linux-troubleshooting-tools) | 912 | Advanced diagnostic tools |
+| [System Information & Monitoring](#system-information--monitoring) | 914 | Monitoring section |
+| [top - Process Monitor](#top---real-time-process-monitoring) | 916 | Real-time process viewer |
+| [htop - Interactive Process Viewer](#htop---interactive-process-viewer) | ~940 | Enhanced top alternative |
+| [vmstat - Virtual Memory Stats](#vmstat---virtual-memory-statistics) | ~970 | Memory/CPU statistics |
+| [iostat - I/O Statistics](#iostat---io-statistics) | ~1000 | Disk I/O monitoring |
+| [mpstat - CPU Statistics](#mpstat---multiprocessor-statistics) | ~1030 | Per-CPU statistics |
+| [sar - System Activity Report](#sar---system-activity-reporter) | ~1060 | Historical system data |
+| **NETWORK TOOLS** |
+| [Network Troubleshooting](#network-troubleshooting) | ~1100 | Network diagnostics |
+| [netstat - Network Statistics](#netstat---network-statistics) | ~1110 | Network connections |
+| [ss - Socket Statistics](#ss---socket-statistics) | ~1140 | Modern netstat replacement |
+| [ip - Network Configuration](#ip---network-configuration) | ~1170 | IP address management |
+| [ping - Network Connectivity](#ping---test-network-connectivity) | ~1200 | Test connectivity |
+| [traceroute - Route Tracing](#traceroute---trace-network-route) | ~1230 | Trace network path |
+| [nslookup/dig - DNS Lookup](#nslookup--dig---dns-lookup) | ~1260 | DNS queries |
+| [tcpdump - Packet Capture](#tcpdump---packet-capture) | ~1290 | Network packet analysis |
+| **DISK & FILESYSTEM** |
+| [Disk and Filesystem Tools](#disk-and-filesystem-tools) | ~1320 | Storage management |
+| [lsblk - List Block Devices](#lsblk---list-block-devices) | ~1330 | View disk layout |
+| [fdisk - Partition Manager](#fdisk---disk-partitioning) | ~1360 | Disk partitioning |
+| [mount/umount - Mount Filesystems](#mount--umount---mount-filesystems) | ~1390 | Mount/unmount operations |
+| [fsck - Filesystem Check](#fsck---filesystem-check) | ~1420 | Repair filesystems |
+| [lsof - List Open Files](#lsof---list-open-files) | ~1450 | Find open files |
+| **ADVANCED DIAGNOSTICS** |
+| [strace - System Call Tracer](#strace---system-call-tracer) | ~1489 | Trace system calls |
+| [ltrace - Library Call Tracer](#ltrace---library-call-tracer) | ~1560 | Trace library calls |
+| [perf - Performance Analysis](#perf---performance-analysis) | ~1590 | CPU profiling |
+| [dmesg - Kernel Messages](#dmesg---kernel-ring-buffer) | ~1620 | View kernel logs |
+| [journalctl - Systemd Logs](#journalctl---systemd-journal) | ~1650 | Query systemd journal |
+| **LOG FILES** |
+| [Log File Locations](#log-files-and-locations) | ~1700 | Important log paths |
+| [System Logs](#system-logs) | ~1710 | /var/log/* files |
+| [Application Logs](#application-logs) | ~1740 | App-specific logs |
+| **PERFORMANCE** |
+| [Performance Tuning](#performance-tuning-and-optimization) | ~1800 | Optimization techniques |
+| [CPU Performance](#cpu-performance) | ~1810 | CPU optimization |
+| [Memory Performance](#memory-performance) | ~1840 | RAM optimization |
+| [Disk Performance](#disk-io-performance) | ~1870 | I/O optimization |
+| [Network Performance](#network-performance) | ~1900 | Network tuning |
+| **SECURITY** |
+| [Security Tools](#security-and-access-control) | ~1950 | Security diagnostics |
+| [SELinux Troubleshooting](#selinux-troubleshooting) | ~1960 | SELinux issues |
+| [Firewall (iptables/firewalld)](#firewall-troubleshooting) | ~2000 | Firewall debugging |
+| **BOOT & RECOVERY** |
+| [System Won't Boot](#system-wont-boot) | ~2050 | Boot troubleshooting |
+| [GRUB Issues](#grub-bootloader-issues) | ~2060 | Bootloader problems |
+| [Recovery Mode](#recovery-mode) | ~2090 | Single user mode |
+| [Rescue System](#rescue-system) | ~2120 | Emergency recovery |
+| **SYSTEM CALLS** |
+| [System Calls Overview](#system-calls) | ~2200 | Understanding syscalls |
+| [Common System Calls](#common-system-calls) | ~2210 | Frequently used syscalls |
+| [User Space vs Kernel Space](#user-space-vs-kernel-space) | ~2250 | OS architecture |
+| **SCENARIOS** |
+| [Common Scenarios and Solutions](#common-scenarios-and-solutions) | ~2300 | Real-world problems |
+| [High CPU Usage](#high-cpu-usage) | ~2310 | CPU troubleshooting |
+| [High Memory Usage](#high-memory-usage) | ~2350 | Memory issues |
+| [Disk Full](#disk-full-issues) | ~2390 | Storage problems |
+| [Network Issues](#network-connectivity-issues) | ~2430 | Connectivity problems |
+| [Slow System](#slow-system-performance) | ~2470 | Performance issues |
+| [Application Without Logs](#application-without-logs) | ~2510 | Debug apps with no logs |
+| **SCRIPTS & AUTOMATION** |
+| [Bash Scripting Basics](#bash-scripting-for-troubleshooting) | ~2600 | Shell script fundamentals |
+| [Monitoring Scripts](#monitoring-scripts) | ~2650 | Automated monitoring |
+| **BEST PRACTICES** |
+| [Troubleshooting Best Practices](#troubleshooting-best-practices) | ~2750 | Tips and guidelines |
+| [Documentation](#documentation-and-logging) | ~2760 | Keeping records |
+| [Safety Precautions](#safety-precautions) | ~2780 | Avoiding disasters |
+
+---
+
+## Detailed Table of Contents
 1. [General Troubleshooting Approach](#general-troubleshooting-approach)
-2. [Essential Linux Troubleshooting Tools](#essential-linux-troubleshooting-tools)
-3. [Application Without Logs](#application-without-logs)
-4. [System Won't Boot](#system-wont-boot)
-5. [System Calls](#system-calls)
-6. [User Space vs Kernel Space](#user-space-vs-kernel-space)
-7. [Common Scenarios and Solutions](#common-scenarios-and-solutions)
+2. [Linux Command Fundamentals](#linux-command-fundamentals)
+3. [Essential Linux Troubleshooting Tools](#essential-linux-troubleshooting-tools)
+4. [Application Without Logs](#application-without-logs)
+5. [System Won't Boot](#system-wont-boot)
+6. [System Calls](#system-calls)
+7. [User Space vs Kernel Space](#user-space-vs-kernel-space)
+8. [Common Scenarios and Solutions](#common-scenarios-and-solutions)
 
 ---
 
@@ -23,11 +165,900 @@
 
 ---
 
+## Linux Command Fundamentals
+
+Understanding Linux command structure and syntax is essential for effective troubleshooting and system administration.
+
+### Command Structure
+
+```bash
+command [options] [arguments]
+```
+
+**Components:**
+- **command**: The program or utility to execute
+- **options/flags**: Modify command behavior (usually start with `-` or `--`)
+- **arguments**: Input data (files, directories, values)
+
+**Examples:**
+```bash
+ls -la /var/log              # Command: ls, Options: -la, Argument: /var/log
+grep -r "error" /var/log     # Command: grep, Options: -r, Arguments: "error" /var/log
+systemctl status nginx       # Command: systemctl, Argument: status, Argument: nginx
+```
+
+---
+
+### Common Command Options
+
+#### Short Options vs Long Options
+
+```bash
+# Short options (single dash, single character)
+ls -l -a -h                  # Can be combined: ls -lah
+ps -e -f                     # Can be combined: ps -ef
+
+# Long options (double dash, full word)
+ls --all --human-readable
+docker --version
+grep --recursive --ignore-case
+
+# Some commands support both
+tar -x -v -f file.tar        # Short: tar -xvf file.tar
+tar --extract --verbose --file=file.tar  # Long
+
+# Mixed usage
+ls -la --color=auto
+```
+
+#### Common Option Patterns
+
+| Option | Meaning | Example |
+|--------|---------|---------|
+| `-a, --all` | Show all (including hidden) | `ls -a` |
+| `-r, -R, --recursive` | Recursive operation | `rm -r dir/` |
+| `-v, --verbose` | Verbose output | `cp -v file1 file2` |
+| `-f, --force` | Force operation | `rm -f file` |
+| `-i, --interactive` | Interactive/prompt | `rm -i file` |
+| `-h, --human-readable` | Human-readable sizes | `df -h` |
+| `-n` | Numeric output | `netstat -n` |
+| `-p` | Process/PID related | `ps -p 1234` |
+| `-u` | User related | `ps -u username` |
+| `-q, --quiet` | Quiet/silent | `grep -q pattern` |
+| `-o, --output` | Output file | `gcc -o program` |
+
+---
+
+### File and Directory Commands
+
+#### **ls** - List Directory Contents
+
+```bash
+# Basic usage
+ls                           # List current directory
+ls /path/to/dir             # List specific directory
+ls file.txt                 # Check if file exists
+
+# Common options
+ls -l                       # Long format (permissions, size, date)
+ls -a                       # Show hidden files (starting with .)
+ls -h                       # Human-readable sizes (KB, MB, GB)
+ls -t                       # Sort by modification time (newest first)
+ls -r                       # Reverse order
+ls -S                       # Sort by size (largest first)
+ls -R                       # Recursive listing
+
+# Combined options
+ls -lah                     # Long, all files, human-readable
+ls -ltr                     # Long, sorted by time, reversed (oldest first)
+ls -lhS                     # Long, human-readable, sorted by size
+
+# Advanced usage
+ls -li                      # Show inode numbers
+ls -ld /var/log            # List directory itself, not contents
+ls *.txt                    # List only .txt files
+ls -1                       # One file per line
+ls --color=auto            # Colored output
+
+# Output explanation (ls -l)
+# -rw-r--r-- 1 user group 1234 Oct 19 10:30 file.txt
+# │││││││││  │ │    │     │    │           └─ filename
+# │││││││││  │ │    │     │    └─ modification date/time
+# │││││││││  │ │    │     └─ size in bytes
+# │││││││││  │ │    └─ group owner
+# │││││││││  │ └─ user owner
+# │││││││││  └─ number of hard links
+# └─────────── permissions (type and rwx for user, group, others)
+```
+
+#### **cd** - Change Directory
+
+```bash
+cd /path/to/directory       # Absolute path
+cd relative/path            # Relative path
+cd ..                       # Parent directory
+cd ../..                    # Two levels up
+cd ~                        # Home directory
+cd -                        # Previous directory
+cd                          # Home directory (no argument)
+
+# Useful shortcuts
+cd ~username                # Another user's home directory
+cd /                        # Root directory
+pwd                         # Print working directory (where am I?)
+```
+
+#### **pwd** - Print Working Directory
+
+```bash
+pwd                         # Show current directory
+pwd -P                      # Physical path (resolve symlinks)
+pwd -L                      # Logical path (show symlink path)
+```
+
+#### **mkdir** - Make Directory
+
+```bash
+mkdir dirname               # Create single directory
+mkdir -p path/to/nested/dir # Create nested directories (parent directories)
+mkdir -m 755 dirname        # Set permissions during creation
+mkdir -v dirname            # Verbose output
+mkdir dir1 dir2 dir3        # Create multiple directories
+
+# Examples
+mkdir -p ~/projects/{python,java,golang}/src  # Create nested structure
+mkdir -m 700 ~/.ssh         # Create with specific permissions
+```
+
+#### **rm** - Remove Files/Directories
+
+```bash
+# Remove files
+rm file.txt                 # Remove single file
+rm file1.txt file2.txt      # Remove multiple files
+rm *.log                    # Remove all .log files
+
+# Common options
+rm -f file.txt              # Force (no prompt, ignore non-existent)
+rm -i file.txt              # Interactive (prompt before each)
+rm -v file.txt              # Verbose (show what's being deleted)
+
+# Remove directories
+rm -r directory             # Recursive (required for directories)
+rm -rf directory            # Force recursive (DANGEROUS!)
+rm -ri directory            # Interactive recursive (safer)
+
+# Safer alternatives
+rm -I *.txt                 # Prompt once before removing >3 files
+trash file.txt              # Move to trash (if trash-cli installed)
+
+# ⚠️ DANGEROUS COMMANDS (NEVER RUN THESE)
+# rm -rf /                  # Delete everything (root required)
+# rm -rf /*                 # Delete everything in root
+# rm -rf ~                  # Delete entire home directory
+```
+
+#### **cp** - Copy Files/Directories
+
+```bash
+# Copy files
+cp source.txt destination.txt           # Copy and rename
+cp file.txt /path/to/destination/       # Copy to directory
+cp file1.txt file2.txt /dest/           # Copy multiple files
+
+# Common options
+cp -r source_dir dest_dir               # Recursive (for directories)
+cp -i file.txt dest.txt                 # Interactive (prompt before overwrite)
+cp -v file.txt dest.txt                 # Verbose
+cp -p file.txt dest.txt                 # Preserve attributes (permissions, timestamps)
+cp -a source dest                       # Archive mode (-dpR, preserve everything)
+cp -u source.txt dest.txt               # Update (copy only if newer)
+cp -n source.txt dest.txt               # No clobber (don't overwrite)
+
+# Advanced usage
+cp -r src/ dest/                        # Copy directory contents
+cp -r src dest                          # Copy directory itself
+cp --backup=numbered file.txt dest/     # Create numbered backups
+cp -L symlink dest                      # Follow symlinks (copy target)
+```
+
+#### **mv** - Move/Rename Files
+
+```bash
+# Rename file/directory
+mv oldname.txt newname.txt              # Rename file
+mv old_dir new_dir                      # Rename directory
+
+# Move files
+mv file.txt /path/to/destination/       # Move file
+mv file1.txt file2.txt /dest/           # Move multiple files
+mv *.log /var/log/                      # Move all .log files
+
+# Common options
+mv -i file.txt dest.txt                 # Interactive (prompt before overwrite)
+mv -f file.txt dest.txt                 # Force (no prompt)
+mv -v file.txt dest.txt                 # Verbose
+mv -n file.txt dest.txt                 # No clobber (don't overwrite)
+mv -u source.txt dest.txt               # Update (move only if newer)
+
+# Examples
+mv ~/Downloads/*.pdf ~/Documents/       # Move all PDFs
+mv -t /destination/ file1 file2 file3   # Move to target directory
+```
+
+#### **touch** - Create Empty File or Update Timestamp
+
+```bash
+touch file.txt                          # Create empty file or update timestamp
+touch file1.txt file2.txt               # Create multiple files
+touch -c file.txt                       # Don't create file if doesn't exist
+touch -t 202310191530.00 file.txt       # Set specific timestamp (YYYYMMDDhhmm.ss)
+touch -r reference.txt new.txt          # Use timestamp from reference file
+touch -d "2023-10-19 15:30" file.txt    # Set timestamp with date string
+```
+
+#### **cat** - Concatenate and Display Files
+
+```bash
+cat file.txt                            # Display file contents
+cat file1.txt file2.txt                 # Display multiple files
+cat > newfile.txt                       # Create file (Ctrl+D to save)
+cat >> file.txt                         # Append to file
+cat -n file.txt                         # Show line numbers
+cat -b file.txt                         # Number non-empty lines only
+cat -s file.txt                         # Squeeze multiple blank lines
+cat -A file.txt                         # Show all characters (including special)
+
+# Useful combinations
+cat file.txt | grep "error"             # Display and search
+cat /dev/null > file.txt                # Empty file contents
+```
+
+#### **less** - View File Contents (Paginated)
+
+```bash
+less file.txt                           # View file with pagination
+less +F file.txt                        # Follow mode (like tail -f)
+less -N file.txt                        # Show line numbers
+less -S file.txt                        # No line wrapping
+
+# Navigation keys inside less
+# Space / f         - Next page
+# b                 - Previous page
+# /pattern          - Search forward
+# ?pattern          - Search backward
+# n                 - Next search result
+# N                 - Previous search result
+# g                 - Go to beginning
+# G                 - Go to end
+# q                 - Quit
+# h                 - Help
+```
+
+#### **head** - Display First Lines
+
+```bash
+head file.txt                           # First 10 lines (default)
+head -n 20 file.txt                     # First 20 lines
+head -n 5 file.txt                      # First 5 lines
+head -c 100 file.txt                    # First 100 bytes
+head -n -5 file.txt                     # All except last 5 lines
+head file1.txt file2.txt                # Multiple files
+```
+
+#### **tail** - Display Last Lines
+
+```bash
+tail file.txt                           # Last 10 lines (default)
+tail -n 20 file.txt                     # Last 20 lines
+tail -f file.txt                        # Follow mode (live updates)
+tail -F file.txt                        # Follow with retry (if file rotated)
+tail -n +10 file.txt                    # From line 10 to end
+tail -c 100 file.txt                    # Last 100 bytes
+
+# Real-time log monitoring
+tail -f /var/log/syslog                 # Follow system log
+tail -f /var/log/nginx/access.log       # Follow web server log
+tail -f file.log | grep "ERROR"         # Follow and filter
+```
+
+---
+
+### Text Processing Commands
+
+#### **grep** - Search Text Patterns
+
+```bash
+# Basic usage
+grep "pattern" file.txt                 # Search for pattern
+grep "error" /var/log/syslog            # Search in log file
+grep -i "error" file.txt                # Case-insensitive
+grep -v "info" file.txt                 # Invert match (exclude lines)
+grep -n "pattern" file.txt              # Show line numbers
+grep -c "pattern" file.txt              # Count matching lines
+
+# Recursive search
+grep -r "pattern" /path/to/dir          # Recursive search in directory
+grep -R "pattern" /path/to/dir          # Recursive with symlinks
+grep -r "TODO" ~/projects/              # Find all TODOs in project
+
+# Advanced options
+grep -w "word" file.txt                 # Match whole word only
+grep -x "exact line" file.txt           # Match exact line
+grep -l "pattern" *.txt                 # List files with matches
+grep -L "pattern" *.txt                 # List files without matches
+grep -A 5 "pattern" file.txt            # Show 5 lines After match
+grep -B 5 "pattern" file.txt            # Show 5 lines Before match
+grep -C 5 "pattern" file.txt            # Show 5 lines Context (before+after)
+
+# Regular expressions
+grep "^start" file.txt                  # Lines starting with "start"
+grep "end$" file.txt                    # Lines ending with "end"
+grep "^$" file.txt                      # Empty lines
+grep "[0-9]" file.txt                   # Lines containing numbers
+grep -E "pattern1|pattern2" file.txt    # Extended regex (OR)
+grep -P "\d{3}-\d{4}" file.txt          # Perl regex (phone numbers)
+
+# Practical examples
+grep -r "error" /var/log/ | grep -i "mysql"     # Find MySQL errors
+grep -v "^#" /etc/ssh/sshd_config | grep -v "^$" # Show non-comment, non-empty lines
+ps aux | grep nginx                              # Find nginx processes
+```
+
+#### **sed** - Stream Editor
+
+```bash
+# Substitution (find and replace)
+sed 's/old/new/' file.txt               # Replace first occurrence per line
+sed 's/old/new/g' file.txt              # Replace all occurrences (global)
+sed 's/old/new/gi' file.txt             # Replace all (case-insensitive)
+sed 's/old/new/2' file.txt              # Replace 2nd occurrence per line
+sed -i 's/old/new/g' file.txt           # Edit file in-place
+sed -i.bak 's/old/new/g' file.txt       # Edit with backup
+
+# Delete lines
+sed '5d' file.txt                       # Delete line 5
+sed '5,10d' file.txt                    # Delete lines 5-10
+sed '/pattern/d' file.txt               # Delete lines matching pattern
+sed '/^$/d' file.txt                    # Delete empty lines
+sed '/^#/d' file.txt                    # Delete comment lines
+
+# Print specific lines
+sed -n '10p' file.txt                   # Print line 10 only
+sed -n '10,20p' file.txt                # Print lines 10-20
+sed -n '/pattern/p' file.txt            # Print matching lines
+
+# Insert and append
+sed '5i\New line text' file.txt         # Insert before line 5
+sed '5a\New line text' file.txt         # Append after line 5
+sed '/pattern/a\New line' file.txt      # Append after matching line
+
+# Practical examples
+sed -i 's/127.0.0.1/192.168.1.1/g' config.txt   # Replace IP
+sed 's/ *$//' file.txt                          # Remove trailing spaces
+sed '/^#/d; /^$/d' config.txt                   # Remove comments and empty lines
+sed -n '/START/,/END/p' file.txt                # Print between patterns
+```
+
+#### **awk** - Pattern Scanning and Processing
+
+```bash
+# Print columns
+awk '{print $1}' file.txt               # Print 1st column
+awk '{print $1, $3}' file.txt           # Print 1st and 3rd columns
+awk '{print $NF}' file.txt              # Print last column
+awk '{print $0}' file.txt               # Print entire line
+
+# Field separator
+awk -F: '{print $1}' /etc/passwd        # Use : as separator (usernames)
+awk -F, '{print $2}' data.csv           # Parse CSV (2nd field)
+awk 'BEGIN{FS=":"} {print $1}' /etc/passwd  # Alternative syntax
+
+# Pattern matching
+awk '/pattern/ {print $0}' file.txt     # Print lines matching pattern
+awk '$3 > 100 {print $1}' file.txt      # Print if 3rd field > 100
+awk 'NR==5 {print}' file.txt            # Print line 5
+awk 'NR>=5 && NR<=10 {print}' file.txt  # Print lines 5-10
+
+# Built-in variables
+awk '{print NR, $0}' file.txt           # NR = line number
+awk '{print NF}' file.txt               # NF = number of fields
+awk 'END {print NR}' file.txt           # Print total line count
+
+# Calculations
+awk '{sum += $1} END {print sum}' file.txt          # Sum 1st column
+awk '{sum += $1} END {print sum/NR}' file.txt       # Average
+awk '$3 > 100 {count++} END {print count}' file.txt # Count lines
+
+# Practical examples
+ps aux | awk '{print $2, $11}'                      # Print PID and command
+df -h | awk '$5+0 > 80 {print $0}'                  # Disks over 80% full
+awk -F: '$3 >= 1000 {print $1}' /etc/passwd         # Regular users
+netstat -an | awk '/ESTABLISHED/ {count++} END {print count}'  # Count connections
+```
+
+#### **sort** - Sort Lines
+
+```bash
+sort file.txt                           # Sort alphabetically
+sort -r file.txt                        # Reverse sort
+sort -n file.txt                        # Numeric sort
+sort -h file.txt                        # Human-numeric sort (1K, 2M, 3G)
+sort -u file.txt                        # Sort and remove duplicates
+sort -k2 file.txt                       # Sort by 2nd field
+sort -k2,2n -k1,1 file.txt              # Sort by 2nd field (numeric), then 1st
+sort -t: -k3n /etc/passwd               # Sort by 3rd field, : separator
+
+# Practical examples
+du -sh * | sort -h                      # Sort directories by size
+ps aux | sort -k3nr | head -10          # Top 10 CPU consumers
+sort -u file.txt > sorted.txt           # Remove duplicates and save
+```
+
+#### **uniq** - Remove Duplicate Lines
+
+```bash
+uniq file.txt                           # Remove consecutive duplicates
+uniq -c file.txt                        # Count occurrences
+uniq -d file.txt                        # Show only duplicates
+uniq -u file.txt                        # Show only unique lines
+uniq -i file.txt                        # Case-insensitive
+
+# Note: Must sort first for all duplicates
+sort file.txt | uniq                    # Remove all duplicates
+sort file.txt | uniq -c | sort -nr      # Count and sort by frequency
+```
+
+#### **cut** - Extract Columns
+
+```bash
+cut -d: -f1 /etc/passwd                 # 1st field, : delimiter
+cut -d: -f1,3 /etc/passwd               # 1st and 3rd fields
+cut -d: -f1-3 /etc/passwd               # Fields 1 through 3
+cut -c1-10 file.txt                     # Characters 1-10
+cut -c1,5,10 file.txt                   # Characters 1, 5, and 10
+
+# Practical examples
+cat /etc/passwd | cut -d: -f1           # Extract usernames
+echo "192.168.1.100" | cut -d. -f1-3    # Get network portion (192.168.1)
+```
+
+#### **tr** - Translate or Delete Characters
+
+```bash
+tr 'a-z' 'A-Z' < file.txt               # Lowercase to uppercase
+tr 'A-Z' 'a-z' < file.txt               # Uppercase to lowercase
+tr -d '0-9' < file.txt                  # Delete all digits
+tr -s ' ' < file.txt                    # Squeeze repeated spaces
+tr ' ' '_' < file.txt                   # Replace spaces with underscores
+tr -d '\r' < dos.txt > unix.txt         # Convert DOS to Unix (remove \r)
+
+# Practical examples
+echo "hello world" | tr 'a-z' 'A-Z'     # HELLO WORLD
+cat file.txt | tr -s '\n'               # Remove blank lines
+```
+
+#### **wc** - Word Count
+
+```bash
+wc file.txt                             # Lines, words, bytes
+wc -l file.txt                          # Count lines only
+wc -w file.txt                          # Count words only
+wc -c file.txt                          # Count bytes
+wc -m file.txt                          # Count characters
+wc -L file.txt                          # Longest line length
+
+# Practical examples
+ls | wc -l                              # Count files in directory
+ps aux | wc -l                          # Count running processes
+grep "error" /var/log/syslog | wc -l    # Count error lines
+```
+
+---
+
+### File Permissions and Ownership
+
+#### **chmod** - Change File Permissions
+
+```bash
+# Numeric mode (octal)
+chmod 755 file.txt                      # rwxr-xr-x
+chmod 644 file.txt                      # rw-r--r--
+chmod 600 file.txt                      # rw-------
+chmod 777 file.txt                      # rwxrwxrwx (dangerous!)
+chmod 000 file.txt                      # --------- (no permissions)
+
+# Recursive
+chmod -R 755 directory/                 # Apply to directory and contents
+
+# Symbolic mode
+chmod u+x file.txt                      # Add execute for user
+chmod g-w file.txt                      # Remove write for group
+chmod o+r file.txt                      # Add read for others
+chmod a+x file.txt                      # Add execute for all
+chmod u=rwx,g=rx,o=r file.txt          # Set specific permissions
+
+# Permission numbers
+# 4 = read (r)
+# 2 = write (w)
+# 1 = execute (x)
+# 0 = no permission (-)
+#
+# 7 = 4+2+1 = rwx
+# 6 = 4+2   = rw-
+# 5 = 4+1   = r-x
+# 4 = 4     = r--
+# 3 = 2+1   = -wx
+# 2 = 2     = -w-
+# 1 = 1     = --x
+# 0 = 0     = ---
+
+# Common patterns
+chmod 755 script.sh                     # Executable script
+chmod 644 document.txt                  # Regular file
+chmod 600 ~/.ssh/id_rsa                 # Private key
+chmod 700 ~/.ssh                        # SSH directory
+chmod 1777 /tmp                         # Sticky bit
+```
+
+#### **chown** - Change Ownership
+
+```bash
+chown user file.txt                     # Change owner
+chown user:group file.txt               # Change owner and group
+chown :group file.txt                   # Change group only
+chown -R user:group directory/          # Recursive
+
+# Practical examples
+sudo chown root:root /etc/config        # Change to root
+sudo chown www-data:www-data /var/www/  # Web server ownership
+sudo chown -R $USER:$USER ~/project/    # Take ownership
+```
+
+#### **chgrp** - Change Group
+
+```bash
+chgrp group file.txt                    # Change group
+chgrp -R group directory/               # Recursive
+```
+
+#### **umask** - Set Default Permissions
+
+```bash
+umask                                   # Show current umask
+umask 022                               # Set umask (common: files 644, dirs 755)
+umask 077                               # Restrictive (files 600, dirs 700)
+
+# How umask works:
+# Files: 666 - umask = default permissions
+# Dirs:  777 - umask = default permissions
+# umask 022: files=644 (666-022), dirs=755 (777-022)
+```
+
+---
+
+### Process Management Commands
+
+#### **ps** - Process Status
+
+```bash
+ps                                      # Show processes in current shell
+ps aux                                  # All processes, detailed (BSD style)
+ps -ef                                  # All processes (System V style)
+ps -u username                          # Processes by user
+ps -p 1234                              # Process by PID
+ps -C nginx                             # Processes by command name
+
+# Output filtering
+ps aux | grep nginx                     # Find nginx processes
+ps aux --sort=-%cpu | head              # Top CPU consumers
+ps aux --sort=-%mem | head              # Top memory consumers
+
+# Custom output
+ps -eo pid,ppid,cmd,%cpu,%mem --sort=-%cpu | head
+ps -eo user,pid,ppid,cmd                # Specific columns
+```
+
+#### **kill** - Send Signal to Process
+
+```bash
+kill PID                                # Send TERM signal (graceful)
+kill -9 PID                             # Send KILL signal (force)
+kill -15 PID                            # Send TERM (same as no option)
+kill -HUP PID                           # Reload configuration
+kill -STOP PID                          # Pause process
+kill -CONT PID                          # Resume process
+
+# Kill by name
+killall nginx                           # Kill all nginx processes
+pkill -f "python script.py"             # Kill by pattern
+
+# Common signals
+# 1  HUP     - Hang up (reload config)
+# 2  INT     - Interrupt (Ctrl+C)
+# 9  KILL    - Force kill (cannot be caught)
+# 15 TERM    - Terminate gracefully (default)
+# 18 CONT    - Continue
+# 19 STOP    - Stop (pause)
+```
+
+#### **pkill / pgrep** - Process Management by Name
+
+```bash
+pgrep nginx                             # Find PIDs by name
+pgrep -u username                       # Find PIDs by user
+pgrep -f "python script.py"             # Find by full command line
+
+pkill nginx                             # Kill processes by name
+pkill -9 -u username                    # Force kill user's processes
+pkill -HUP nginx                        # Send HUP to nginx
+```
+
+#### **jobs / fg / bg** - Job Control
+
+```bash
+jobs                                    # List background jobs
+fg                                      # Bring recent job to foreground
+fg %1                                   # Bring job 1 to foreground
+bg                                      # Resume paused job in background
+bg %2                                   # Resume job 2 in background
+
+# Usage
+command &                               # Start in background
+Ctrl+Z                                  # Pause current job
+fg                                      # Resume in foreground
+```
+
+---
+
+### System Information Commands
+
+#### **uname** - System Information
+
+```bash
+uname                                   # Kernel name (Linux)
+uname -a                                # All information
+uname -r                                # Kernel release (5.15.0-91-generic)
+uname -m                                # Machine architecture (x86_64)
+uname -n                                # Network node hostname
+uname -s                                # Kernel name
+uname -v                                # Kernel version with build date
+```
+
+#### **hostname** - Show/Set Hostname
+
+```bash
+hostname                                # Show hostname
+hostname -f                             # FQDN (fully qualified domain name)
+hostname -i                             # IP address
+hostname -I                             # All IP addresses
+sudo hostname newhostname               # Set hostname (temporary)
+```
+
+#### **uptime** - System Uptime
+
+```bash
+uptime                                  # Show uptime and load average
+uptime -p                               # Pretty format (up 5 days, 3 hours)
+uptime -s                               # Since when (2024-10-14 08:30:00)
+```
+
+#### **whoami / who / w** - User Information
+
+```bash
+whoami                                  # Current username
+who                                     # Who is logged in
+who -b                                  # Last boot time
+w                                       # Who is logged in + what they're doing
+users                                   # List logged-in usernames
+last                                    # Login history
+last -n 10                              # Last 10 logins
+last username                           # Specific user's logins
+```
+
+#### **df** - Disk Free Space
+
+```bash
+df                                      # Show disk space
+df -h                                   # Human-readable (GB, MB)
+df -T                                   # Show filesystem type
+df -i                                   # Show inode usage
+df /path                                # Check specific mount point
+df -h --total                           # Show total at bottom
+
+# Practical usage
+df -h | grep -v "tmpfs"                 # Exclude temporary filesystems
+df -h | awk '$5+0 > 80 {print}'        # Show filesystems over 80%
+```
+
+#### **du** - Disk Usage
+
+```bash
+du -sh directory/                       # Summary of directory size
+du -h directory/                        # Sizes of all subdirectories
+du -sh *                                # Size of each item in current dir
+du -ah directory/                       # All files and directories
+du -h --max-depth=1                     # One level deep only
+du -ch directory/                       # Show grand total
+
+# Find largest directories
+du -sh * | sort -h                      # Sort by size
+du -h | sort -h | tail -20              # Top 20 largest
+```
+
+#### **free** - Memory Usage
+
+```bash
+free                                    # Show memory in KB
+free -h                                 # Human-readable
+free -m                                 # Show in MB
+free -g                                 # Show in GB
+free -s 2                               # Update every 2 seconds
+free -t                                 # Show total line
+free -w                                 # Wide mode (split buffers/cache)
+```
+
+---
+
+### Archive and Compression
+
+#### **tar** - Archive Files
+
+```bash
+# Create archives
+tar -cf archive.tar files/              # Create tar archive
+tar -czf archive.tar.gz files/          # Create gzip compressed
+tar -cjf archive.tar.bz2 files/         # Create bzip2 compressed
+tar -cJf archive.tar.xz files/          # Create xz compressed
+
+# Extract archives
+tar -xf archive.tar                     # Extract tar
+tar -xzf archive.tar.gz                 # Extract gzip
+tar -xjf archive.tar.bz2                # Extract bzip2
+tar -xJf archive.tar.xz                 # Extract xz
+
+# List contents
+tar -tf archive.tar                     # List files in archive
+tar -tzf archive.tar.gz                 # List gzip archive
+
+# Options explained
+# c - create
+# x - extract
+# f - file (must be followed by filename)
+# z - gzip compression
+# j - bzip2 compression
+# J - xz compression
+# v - verbose (show progress)
+# t - list contents
+
+# Advanced usage
+tar -czf backup.tar.gz --exclude='*.log' directory/
+tar -xzf archive.tar.gz -C /destination/
+tar -czf - directory/ | ssh user@host "cat > /backup/archive.tar.gz"
+```
+
+#### **gzip / gunzip** - Compress Files
+
+```bash
+gzip file.txt                           # Compress (creates file.txt.gz)
+gzip -k file.txt                        # Keep original file
+gzip -r directory/                      # Compress all files in directory
+gunzip file.txt.gz                      # Decompress
+gzip -d file.txt.gz                     # Decompress (same as gunzip)
+gzip -l file.txt.gz                     # List compression info
+gzip -1 file.txt                        # Fast compression
+gzip -9 file.txt                        # Best compression
+```
+
+#### **zip / unzip** - ZIP Archives
+
+```bash
+zip archive.zip file1 file2             # Create zip
+zip -r archive.zip directory/           # Recursive
+unzip archive.zip                       # Extract
+unzip -l archive.zip                    # List contents
+unzip archive.zip -d /destination/      # Extract to specific directory
+unzip -q archive.zip                    # Quiet mode
+```
+
+---
+
+This comprehensive Linux command reference provides detailed explanations with practical examples for troubleshooting and system administration tasks.
+
+---
+
+## Quick Installation Guide for Common Tools
+
+Most troubleshooting tools can be installed via package managers. Below is a quick reference:
+
+### Red Hat/CentOS/Rocky/Alma Linux
+```bash
+# Essential performance monitoring tools (sysstat package)
+sudo yum install sysstat -y         # RHEL 7 and earlier
+sudo dnf install sysstat -y         # RHEL 8/9+
+# Includes: iostat, sar, mpstat, pidstat, cifsiostat
+
+# Enable EPEL repository (for additional tools)
+sudo yum install epel-release -y    # RHEL 7
+sudo dnf install epel-release -y    # RHEL 8/9+
+
+# Process monitoring tools
+sudo dnf install htop atop glances nmon -y
+
+# I/O monitoring
+sudo dnf install iotop -y
+
+# Network tools
+sudo dnf install tcpdump mtr iftop -y
+
+# System tracing
+sudo dnf install strace ltrace perf -y
+
+# Resource statistics
+sudo dnf install dstat -y           # RHEL 8 (deprecated in RHEL 9)
+sudo dnf install pcp-system-tools -y  # RHEL 9+ (replacement for dstat)
+
+# Enable sysstat for historical data collection
+sudo systemctl enable sysstat
+sudo systemctl start sysstat
+```
+
+### Ubuntu/Debian
+```bash
+# Update package list
+sudo apt-get update
+
+# Essential tools
+sudo apt-get install -y \
+    sysstat \
+    htop \
+    atop \
+    glances \
+    iotop \
+    nmon \
+    dstat \
+    tcpdump \
+    mtr \
+    iftop \
+    strace \
+    ltrace \
+    linux-tools-common \
+    linux-tools-generic \
+    linux-tools-$(uname -r)
+
+# Enable sysstat
+sudo sed -i 's/ENABLED="false"/ENABLED="true"/' /etc/default/sysstat
+sudo systemctl enable sysstat
+sudo systemctl start sysstat
+```
+
+### Using Python pip (Cross-platform)
+```bash
+# For Python-based tools
+pip3 install glances
+pip3 install 'glances[all]'  # With all optional dependencies
+```
+
+### Built-in Tools (No Installation Required)
+The following tools are typically pre-installed on most Linux distributions:
+- `top`, `ps`, `free`, `uptime`, `df`, `du`
+- `vmstat`, `mpstat` (if procps package is installed)
+- `lsof`, `ss`, `ip`, `ping`, `traceroute`
+- `journalctl`, `dmesg`, `systemctl`
+- `grep`, `awk`, `sed`, `tail`, `head`, `less`
+- `netstat` (deprecated, use `ss` instead)
+
+---
+
 ## Essential Linux Troubleshooting Tools
 
 ### System Information & Monitoring
 
 #### **top** - Real-time Process Monitoring
+
+**Built-in:** Yes (no installation required)
+
+**Usage:**
 ```bash
 top                    # Basic usage
 top -u username        # Filter by user
@@ -54,7 +1085,262 @@ top -d 5               # Update every 5 seconds
 - Memory and swap usage
 - Per-process CPU, memory, time, command
 
+#### **top Command Field Descriptions**
+
+**Summary Area (Top Section)**
+
+1. **First Line - System Information:**
+```
+top - 14:23:45 up 5 days, 3:21, 2 users, load average: 0.45, 0.32, 0.28
+```
+- `14:23:45` - Current time
+- `up 5 days, 3:21` - System uptime (days, hours:minutes)
+- `2 users` - Number of logged-in users
+- `load average: 0.45, 0.32, 0.28` - System load averages for 1, 5, and 15 minutes
+  - Values < 1.0 indicate low load
+  - Values = number of CPUs indicate full utilization
+  - Values > number of CPUs indicate system overload
+
+2. **Second Line - Tasks/Processes:**
+```
+Tasks: 245 total, 1 running, 244 sleeping, 0 stopped, 0 zombie
+```
+- `total` - Total number of processes
+- `running` - Processes currently executing on CPU
+- `sleeping` - Processes waiting for resources (idle)
+- `stopped` - Processes suspended (usually by Ctrl+Z)
+- `zombie` - Dead processes waiting to be reaped by parent
+
+3. **Third Line - CPU Usage:**
+```
+%Cpu(s): 12.5 us, 3.2 sy, 0.0 ni, 83.1 id, 1.2 wa, 0.0 hi, 0.0 si, 0.0 st
+```
+- `us` (user) - Time spent running user processes (normal priority)
+- `sy` (system) - Time spent in kernel mode (system calls, kernel operations)
+- `ni` (nice) - Time spent running niced (lower priority) user processes
+- `id` (idle) - Time CPU is idle (higher is better if no work to do)
+- `wa` (wait) - Time waiting for I/O to complete (high = I/O bottleneck)
+- `hi` (hardware interrupts) - Time servicing hardware interrupts
+- `si` (software interrupts) - Time servicing software interrupts
+- `st` (steal time) - Time stolen by hypervisor (VM environments only)
+
+**High wa% indicates:** Disk I/O bottleneck, slow storage, or network issues
+**High sy% indicates:** Many system calls, kernel operations, or context switches
+**High us% indicates:** CPU-intensive application workload
+
+4. **Fourth Line - Physical Memory (RAM):**
+```
+MiB Mem: 16045.2 total, 8234.5 free, 5821.3 used, 1989.4 buff/cache
+```
+- `total` - Total physical RAM installed
+- `free` - Completely unused memory
+- `used` - Memory used by processes (excluding buffers/cache)
+- `buff/cache` - Memory used for buffers and cache (can be reclaimed)
+- **Available memory** = free + buff/cache (approximately)
+
+5. **Fifth Line - Swap Memory:**
+```
+MiB Swap: 8192.0 total, 8190.0 free, 2.0 used, 14523.4 avail Mem
+```
+- `total` - Total swap space configured
+- `free` - Unused swap space
+- `used` - Swap space in use (high usage indicates memory pressure)
+- `avail Mem` - Estimate of memory available for starting new applications
+
+**Process List Area (Bottom Section)**
+
+```
+PID  USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+1234 root      20   0  162896  12456   8764 S   5.3   0.1   0:12.34 nginx
+5678 www-data  20   0 1245678 456789  23456 R  98.5   2.8  15:23.45 php-fpm
+```
+
+**Column Definitions:**
+
+- **PID** (Process ID)
+  - Unique identifier for each process
+  - Used to send signals (kill, stop, etc.)
+
+- **USER**
+  - Username of the process owner
+  - Useful for identifying which user's processes are consuming resources
+
+- **PR** (Priority)
+  - Kernel scheduling priority
+  - Values: 0-39 (lower = higher priority)
+  - RT (Real-Time) indicates real-time scheduling
+
+- **NI** (Nice Value)
+  - User-space priority adjustment
+  - Range: -20 (highest priority) to +19 (lowest priority)
+  - Default is 0
+  - Only root can set negative values
+
+- **VIRT** (Virtual Memory)
+  - Total virtual memory used by process
+  - Includes: code, data, shared libraries, swapped pages
+  - Not all of this is in physical RAM
+  - Can be larger than total RAM
+
+- **RES** (Resident Memory)
+  - Actual physical RAM used by process (non-swapped)
+  - This is the "real" memory usage
+  - More important metric than VIRT
+  - RES ≤ VIRT always
+
+- **SHR** (Shared Memory)
+  - Memory shared with other processes
+  - Includes shared libraries and memory mappings
+  - Counted in RES but can be used by multiple processes
+
+- **S** (Process Status)
+  - `R` - Running (currently executing on CPU)
+  - `S` - Sleeping (waiting for event/resource)
+  - `D` - Uninterruptible sleep (usually I/O wait)
+  - `T` - Stopped (by job control signal)
+  - `t` - Stopped by debugger
+  - `Z` - Zombie (terminated but not reaped)
+  - `I` - Idle kernel thread
+
+- **%CPU** (CPU Usage)
+  - Percentage of CPU time used since last update
+  - Can exceed 100% on multi-core systems
+  - 100% = fully utilizing one CPU core
+  - 400% on quad-core = using all cores
+
+- **%MEM** (Memory Usage)
+  - Percentage of physical RAM (RES) used
+  - Calculated as: (RES / Total RAM) × 100
+
+- **TIME+** (CPU Time)
+  - Total CPU time process has consumed
+  - Format: minutes:seconds.hundredths
+  - Cumulative since process started
+  - Useful for finding long-running processes
+
+- **COMMAND**
+  - Process name or command line
+  - Press `c` to toggle between name and full command path
+  - Truncated if too long
+
+**Additional Fields (press 'f' to select):**
+
+- **PPID** - Parent Process ID
+- **UID** - User ID number
+- **GID** - Group ID number
+- **TTY** - Controlling terminal
+- **%MEM** - Memory usage percentage
+- **WCHAN** - Kernel function where process is sleeping
+- **Flags** - Task flags (technical, rarely useful)
+- **DATA** - Data + Stack size
+- **CODE** - Code size (text segment)
+- **SWAP** - Swapped size
+- **nMaj** - Major page faults
+- **nMin** - Minor page faults
+- **nDRT** - Dirty pages count
+
+**Useful top Commands and Shortcuts:**
+
+```bash
+# Sort processes
+top -o %CPU           # Sort by CPU (same as 'P' in interactive)
+top -o %MEM           # Sort by memory (same as 'M' in interactive)
+top -o TIME+          # Sort by cumulative time
+
+# Filter processes
+top -u username       # Show only user's processes
+top -p 1234,5678      # Monitor specific PIDs
+
+# Batch mode (for scripts)
+top -b -n 1           # Run once and exit
+top -b -n 1 > top.txt # Save output to file
+top -b -n 10 -d 2     # 10 iterations, 2-second delay
+
+# Show individual CPU cores
+top                   # Then press '1'
+# Shows: %Cpu0, %Cpu1, %Cpu2, etc.
+
+# Highlight running processes
+top                   # Then press 'z' for colors, 'x' for column highlight
+
+# Show full command paths
+top                   # Then press 'c'
+```
+
+**Interpreting top Output - Common Scenarios:**
+
+1. **High Load Average** (> number of CPU cores)
+   - System is overloaded
+   - Processes waiting for CPU time
+   - Look at running/waiting processes
+
+2. **High %wa (iowait)**
+   - Disk I/O bottleneck
+   - Check with `iostat` or `iotop`
+   - May need faster storage or I/O optimization
+
+3. **Many Zombie Processes**
+   - Parent process not reaping children
+   - Usually indicates application bug
+   - Find parent with `ps -ef | grep defunct`
+
+4. **High Swap Usage**
+   - System running out of RAM
+   - Performance degradation (swap is slow)
+   - Need to add RAM or reduce memory usage
+
+5. **Process in 'D' State**
+   - Uninterruptible sleep (usually I/O)
+   - Cannot be killed until I/O completes
+   - Check storage subsystem health
+
+**Example Analysis:**
+
+```
+top - 15:30:24 up 10 days, 5:45, 3 users, load average: 8.42, 6.23, 4.15
+Tasks: 312 total, 3 running, 308 sleeping, 0 stopped, 1 zombie
+%Cpu(s): 45.2 us, 12.3 sy, 0.0 ni, 5.4 id, 35.1 wa, 0.2 hi, 1.8 si, 0.0 st
+MiB Mem: 8192.0 total, 124.3 free, 7845.2 used, 222.5 buff/cache
+MiB Swap: 4096.0 total, 1234.5 free, 2861.5 used, 89.7 avail Mem
+
+PID  USER     PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+2345 postgres 20   0  2.5g    1.8g   1.2g D  85.3  22.5  125:34.21 postgres
+```
+
+**Analysis of this system:**
+- ✗ Load average (8.42) much higher than typical for 4-core system = overloaded
+- ✗ High iowait (35.1 wa) = severe I/O bottleneck
+- ✗ Low idle time (5.4 id) = CPU constantly busy
+- ✗ High memory usage (7.8GB/8GB) = memory pressure
+- ✗ High swap usage (2.8GB) = system thrashing
+- ✗ Postgres in 'D' state at 85% CPU = stuck in I/O operation
+- ✗ 1 zombie process = application not cleaning up children
+- **Problem:** Database doing heavy I/O, system out of memory, swapping heavily
+- **Solution:** Add more RAM, optimize queries, improve storage I/O
+
 #### **htop** - Enhanced Interactive Process Viewer
+
+**Installation:**
+```bash
+# Red Hat/CentOS/Rocky/Alma Linux
+sudo yum install htop -y              # RHEL 7 and earlier
+sudo dnf install htop -y              # RHEL 8/9+
+sudo yum install epel-release -y      # Enable EPEL if needed, then install htop
+sudo dnf install epel-release -y      # For RHEL 8/9
+
+# Ubuntu/Debian
+sudo apt-get update
+sudo apt-get install htop -y
+
+# Fedora
+sudo dnf install htop -y
+
+# Verify installation
+htop --version
+which htop
+```
+
+**Usage:**
 ```bash
 htop                   # Enhanced interface with colors
 htop -u username       # Filter by user
@@ -87,6 +1373,29 @@ htop -d 10             # Update delay (tenths of seconds)
 - `U` - Untag all
 
 #### **atop** - Advanced System & Process Monitor
+
+**Installation:**
+```bash
+# Red Hat/CentOS/Rocky/Alma Linux
+sudo yum install atop -y              # RHEL 7 and earlier
+sudo dnf install atop -y              # RHEL 8/9+
+sudo yum install epel-release -y      # Enable EPEL if needed
+sudo dnf install epel-release -y      # For RHEL 8/9
+
+# Enable atop logging service
+sudo systemctl enable atop
+sudo systemctl start atop
+
+# Ubuntu/Debian
+sudo apt-get update
+sudo apt-get install atop -y
+
+# Verify installation
+atop -V
+which atop
+```
+
+**Usage:**
 ```bash
 atop                   # Real-time monitoring
 atop -r /var/log/atop/atop_20251017  # Read log file
@@ -110,6 +1419,33 @@ atopsar               # System activity report
 - Network activity per process
 
 #### **glances** - Cross-Platform System Monitoring
+
+**Installation:**
+```bash
+# Red Hat/CentOS/Rocky/Alma Linux
+sudo yum install glances -y           # RHEL 7 and earlier
+sudo dnf install glances -y           # RHEL 8/9+
+sudo yum install epel-release -y      # Enable EPEL if needed
+sudo dnf install epel-release -y      # For RHEL 8/9
+
+# Ubuntu/Debian
+sudo apt-get update
+sudo apt-get install glances -y
+
+# Using Python pip (any distro)
+pip3 install glances
+# or
+sudo pip3 install glances
+
+# With additional features
+pip3 install 'glances[all]'
+
+# Verify installation
+glances --version
+which glances
+```
+
+**Usage:**
 ```bash
 glances               # All-in-one monitoring
 glances -t 2          # 2-second refresh
@@ -168,6 +1504,27 @@ vmstat -p /dev/sda1   # Partition statistics
 ```
 
 #### **iostat** - CPU and I/O Statistics
+
+**Installation on Red Hat/CentOS/Rocky/Alma Linux:**
+```bash
+# iostat is part of the sysstat package
+# Install sysstat package
+sudo yum install sysstat -y          # RHEL 7 and earlier
+sudo dnf install sysstat -y          # RHEL 8/9 and Fedora
+
+# Enable and start the sysstat service (for data collection)
+sudo systemctl enable sysstat
+sudo systemctl start sysstat
+
+# Verify installation
+iostat -V                            # Check version
+which iostat                         # Verify location (/usr/bin/iostat)
+
+# On Ubuntu/Debian (for reference)
+# sudo apt-get install sysstat -y
+```
+
+**Usage Examples:**
 ```bash
 iostat                # Basic CPU and I/O stats
 iostat -x             # Extended statistics
@@ -194,6 +1551,23 @@ iostat -xz            # Extended, skip devices with no activity
 ```
 
 #### **iotop** - I/O Usage by Process
+
+**Installation:**
+```bash
+# Red Hat/CentOS/Rocky/Alma Linux
+sudo yum install iotop -y             # RHEL 7 and earlier
+sudo dnf install iotop -y             # RHEL 8/9+
+
+# Ubuntu/Debian
+sudo apt-get update
+sudo apt-get install iotop -y
+
+# Verify installation
+iotop --version
+which iotop
+```
+
+**Usage:**
 ```bash
 sudo iotop            # Requires root
 iotop -o              # Only show processes doing I/O
@@ -254,6 +1628,23 @@ lsof -i -n -P | grep ESTABLISHED  # All established connections
 ```
 
 #### **strace** - System Call Tracer
+
+**Installation:**
+```bash
+# Red Hat/CentOS/Rocky/Alma Linux
+sudo yum install strace -y            # RHEL 7 and earlier
+sudo dnf install strace -y            # RHEL 8/9+
+
+# Ubuntu/Debian
+sudo apt-get update
+sudo apt-get install strace -y
+
+# Verify installation
+strace -V
+which strace
+```
+
+**Usage:**
 ```bash
 strace command        # Trace a command
 strace -p PID         # Attach to running process
@@ -300,6 +1691,23 @@ strace -p $(pgrep processname)  # Attach by name
 - Understanding application behavior
 
 #### **ltrace** - Library Call Tracer
+
+**Installation:**
+```bash
+# Red Hat/CentOS/Rocky/Alma Linux
+sudo yum install ltrace -y            # RHEL 7 and earlier
+sudo dnf install ltrace -y            # RHEL 8/9+
+
+# Ubuntu/Debian
+sudo apt-get update
+sudo apt-get install ltrace -y
+
+# Verify installation
+ltrace -V
+which ltrace
+```
+
+**Usage:**
 ```bash
 ltrace command        # Trace library calls
 ltrace -p PID         # Attach to running process
@@ -330,6 +1738,26 @@ ltrace -c ./myapp     # Statistics of library usage
 - Often used together for complete picture
 
 #### **perf** - Performance Analysis Tool
+
+**Installation:**
+```bash
+# Red Hat/CentOS/Rocky/Alma Linux
+sudo yum install perf -y              # RHEL 7 and earlier
+sudo dnf install perf -y              # RHEL 8/9+
+
+# Ubuntu/Debian
+sudo apt-get update
+sudo apt-get install linux-tools-common linux-tools-generic linux-tools-$(uname -r) -y
+
+# Verify installation
+perf --version
+which perf
+
+# Note: Kernel debug symbols may be needed for detailed analysis
+# RHEL/CentOS: sudo debuginfo-install kernel
+```
+
+**Usage:**
 ```bash
 perf top              # Real-time performance counter
 perf stat command     # Performance statistics
@@ -367,6 +1795,36 @@ perf script | ./flamegraph.pl > flamegraph.svg
 - Custom tracepoints
 
 #### **sar** - System Activity Reporter
+
+**Installation:**
+```bash
+# sar is part of the sysstat package
+# Red Hat/CentOS/Rocky/Alma Linux
+sudo yum install sysstat -y           # RHEL 7 and earlier
+sudo dnf install sysstat -y           # RHEL 8/9+
+
+# Enable and start data collection
+sudo systemctl enable sysstat
+sudo systemctl start sysstat
+
+# Ubuntu/Debian
+sudo apt-get update
+sudo apt-get install sysstat -y
+
+# Enable data collection (edit /etc/default/sysstat)
+sudo sed -i 's/ENABLED="false"/ENABLED="true"/' /etc/default/sysstat
+sudo systemctl enable sysstat
+sudo systemctl start sysstat
+
+# Verify installation
+sar -V
+which sar
+
+# Note: Historical data requires waiting for cron jobs to collect data
+# Or manually run: sudo /usr/lib64/sa/sa1
+```
+
+**Usage:**
 ```bash
 sar                   # Default report (CPU)
 sar -u                # CPU utilization
@@ -402,6 +1860,27 @@ sar -u -r -b -n DEV   # CPU, Memory, I/O, Network
 **Requires:** sysstat package and cron job for data collection
 
 #### **dstat** - Versatile Resource Statistics
+
+**Installation:**
+```bash
+# Red Hat/CentOS/Rocky/Alma Linux
+sudo yum install dstat -y             # RHEL 7 and earlier
+sudo dnf install dstat -y             # RHEL 8 (deprecated, consider using pcp-dstat)
+
+# For RHEL 9+ (dstat is deprecated, replaced by pcp)
+sudo dnf install pcp-system-tools -y
+# Use: pcp dstat
+
+# Ubuntu/Debian
+sudo apt-get update
+sudo apt-get install dstat -y
+
+# Verify installation
+dstat --version
+which dstat
+```
+
+**Usage:**
 ```bash
 dstat                 # Default output
 dstat -cdngy          # CPU, Disk, Net, paging, system
@@ -432,6 +1911,25 @@ dstat --nocolor       # Disable colors
 - CSV export for analysis
 
 #### **nmon** - Performance Monitor
+
+**Installation:**
+```bash
+# Red Hat/CentOS/Rocky/Alma Linux
+sudo yum install nmon -y              # RHEL 7 and earlier
+sudo dnf install nmon -y              # RHEL 8/9+
+sudo yum install epel-release -y      # Enable EPEL if needed
+sudo dnf install epel-release -y      # For RHEL 8/9
+
+# Ubuntu/Debian
+sudo apt-get update
+sudo apt-get install nmon -y
+
+# Verify installation
+nmon -h
+which nmon
+```
+
+**Usage:**
 ```bash
 nmon                  # Interactive mode
 nmon -f -s 2 -c 30    # Record 30 snapshots at 2-sec intervals
@@ -879,6 +2377,21 @@ mtr -r -c 100 host > report.txt
 # q - Quit
 ```
 
+**Installation:**
+```bash
+# Red Hat/CentOS/Rocky/Alma Linux
+sudo yum install mtr -y               # RHEL 7 and earlier
+sudo dnf install mtr -y               # RHEL 8/9+
+
+# Ubuntu/Debian
+sudo apt-get update
+sudo apt-get install mtr -y
+
+# Verify installation
+mtr --version
+which mtr
+```
+
 **Advantages over ping/traceroute:**
 - Combines functionality of both
 - Real-time statistics
@@ -959,6 +2472,25 @@ ss -e                  # Show detailed socket info
 ```
 
 #### **tcpdump** - Packet Capture and Analysis
+
+**Installation:**
+```bash
+# Red Hat/CentOS/Rocky/Alma Linux
+sudo yum install tcpdump -y           # RHEL 7 and earlier
+sudo dnf install tcpdump -y           # RHEL 8/9+
+
+# Ubuntu/Debian
+sudo apt-get update
+sudo apt-get install tcpdump -y
+
+# Verify installation
+tcpdump --version
+which tcpdump
+
+# Note: Requires root/sudo privileges to capture packets
+```
+
+**Usage:**
 ```bash
 # Basic capture
 tcpdump                # Capture on default interface
@@ -1241,6 +2773,27 @@ echo "GET / HTTP/1.0\r\n" | nc host 80  # HTTP banner
 ```
 
 #### **iftop** - Network Bandwidth Monitor
+
+**Installation:**
+```bash
+# Red Hat/CentOS/Rocky/Alma Linux
+sudo yum install iftop -y             # RHEL 7 and earlier
+sudo dnf install iftop -y             # RHEL 8/9+
+sudo yum install epel-release -y      # Enable EPEL if needed
+sudo dnf install epel-release -y      # For RHEL 8/9
+
+# Ubuntu/Debian
+sudo apt-get update
+sudo apt-get install iftop -y
+
+# Verify installation
+iftop -h
+which iftop
+
+# Note: Requires root/sudo privileges
+```
+
+**Usage:**
 ```bash
 sudo iftop                        # Monitor default interface
 sudo iftop -i eth0                # Specific interface
